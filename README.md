@@ -16,7 +16,32 @@
   - [x] Customize the filter
   - [x] thumbnails
   - [x] Chunk upload
+  
+vim node_modules/send/index.js +839
 
+```javascript
+var mime_type = require('mime-types')
+  
+SendStream.prototype.type = function type (path) {
+  var res = this.res
+
+  if (res.getHeader('Content-Type')) return
+
+  // var type = mime.lookup(path)
+  var type = mime.getType(path)
+
+  if (!type) {
+    debug('no content-type')
+    return
+  }
+
+  // var charset = mime.charsets.lookup(type)
+  var charset = mime_type.charsets(type)
+
+  debug('content-type %s', type)
+  res.setHeader('Content-Type', type + (charset ? '; charset=' + charset : ''))
+}
+```
 
 
 # Example
